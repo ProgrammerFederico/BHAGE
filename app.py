@@ -175,6 +175,15 @@ st.markdown(
         .st-key-bhage_shell [class*="st-key-bh_nav_"] button { padding: 0 7px; font-size: 12px; }
         .bh-brandname {font-size:22px;}
     }
+    
+    @media (min-height: 850px) and (min-width: 900px) {
+        .st-key-bhage_shell {
+            transform: translateY(
+                max(0px, calc((100vh - 780px) / 2))
+            );
+        }
+    }
+
 </style>
 """
     + f"""
