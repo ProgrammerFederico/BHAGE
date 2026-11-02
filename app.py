@@ -117,8 +117,52 @@ st.markdown(
     .bh-center-title { color: #f0f2f0; font-size: 21px; font-weight: 720; margin: 5px 0 13px; }
     .bh-center-text { color: #b2b6b3; font-size: 16px; line-height: 1.5; }
     .bh-pill { display:inline-block; margin-top:12px; border-radius: 999px; padding: 4px 12px; background:#232524; color:#e8e8e8; font-weight:600; font-size:13px; }
-    .bh-footer { border-top: 1px solid #161a17; padding-top: 16px; margin-top: 24px; display: flex; justify-content: space-between; align-items:center; gap:8px; font-size: 12px; color: #a1a6a2; }
+    .bh-footer { border-top: 1px solid #161a17; padding: 12px 0 14px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; color: #a1a6a2;}
     .bh-footer-dot { background: #a3dabc; width: 13px; height: 13px; display:inline-block; border-radius:50%; vertical-align:middle; margin-right:5px; }
+
+    /* Compact dashboard sizing — visual-only changes. */
+    .block-container { max-width: 1040px !important; padding: 0px 12px 20px !important; }
+    .st-key-bhage_shell { padding: 13px 15px 20px; position: relative; top: -12px; }
+    .st-key-bhage_shell [data-testid="stVerticalBlock"] { gap: .5rem; }
+    .st-key-bhage_shell [data-testid="stHorizontalBlock"] { gap: .65rem; }
+    .bh-logo { width: 42px; height: 42px; font-size: 23px; }
+    .bh-brandname { font-size: 23px; }
+    .st-key-bhage_shell [class*="st-key-bh_nav_"] button { height: 40px; }
+    .bh-divider { margin: 5px 0 12px; }
+    .bh-heading { font-size: 23px; }
+    .bh-description { font-size: 14px; margin-bottom: 10px; }
+    .bh-grid { gap: 12px 16px; margin-top: 12px; }
+    .bh-metric { min-height: 86px; padding: 9px 12px 11px; }
+    .bh-metric-label { margin-bottom: 9px; }
+    .bh-metric-value { font-size: 23px; }
+    .bh-metric-note { font-size: 14px; margin-top: 8px; }
+    .bh-card { margin-top: 12px; padding: 15px 16px; }
+    /* Keep the footer labels comfortably above the outer border. */
+    .bh-footer { margin-top: 15px; padding: 12px 0 18px; }
+
+    /* White metric icons; research SVGs use thin 1.5px strokes. */
+    .bh-metric-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        font-size: 21px;
+        line-height: 1;
+        color: #f1f2f1;
+    }
+    .bh-metric-icon svg {
+        width: 23px;
+        height: 23px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .bh-metric-icon .bh-legacy-symbol {
+        filter: grayscale(1) brightness(0) invert(1);
+    }
 
     @media (max-width: 650px) {
         .block-container { padding: 9px 5px 20px !important; }
@@ -156,11 +200,36 @@ def page_heading(title: str, description: str) -> None:
     )
 
 
+# Research Evaluation uses consistent outline icons instead of solid emoji glyphs.
+# Keys are internal icon names; the SVGs are presentation-only.
+RESEARCH_ICONS = {
+    "target": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    "scale": '<path d="M12 3v18M5 21h14M4 7h16M7 7l-4 7h8l-4-7ZM17 7l-4 7h8l-4-7Z"/>',
+    "matrix": '<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M12 3v18M3 12h18"/>',
+    "chart": '<path d="M4 20V11M10 20V5M16 20v-9M22 20V8"/>',
+    "dna": '<path d="m10 16 1.5 1.5"/><path d="m14 8-1.5-1.5"/><path d="M15 2c-1.798 1.998-2.518 3.995-2.807 5.993"/><path d="m16.5 10.5 1 1"/><path d="m17 6-2.891-2.891"/><path d="M2 15c6.667-6 13.333 0 20-6"/><path d="m20 9 .891.891"/><path d="M3.109 14.109 4 15"/><path d="m6.5 12.5 1 1"/><path d="m7 18 2.891 2.891"/><path d="M9 22c1.798-1.998 2.518-3.995 2.807-5.993"/>',
+    "network": '<rect x="9.5" y="2" width="5" height="5" rx="2.5"/><rect x="2.5" y="17" width="5" height="5" rx="2.5"/><rect x="16.5" y="17" width="5" height="5" rx="2.5"/><path d="M12 7v5M12 12H5v5M12 12h7v5"/>',
+    "flask": '<path d="M9 3h6M10 3v7l-5.5 8.5A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-2.5L14 10V3M8 15h8"/>',
+}
+
+
+def metric_icon(icon: str) -> str:
+    """Render thin white SVGs for research cards; retain other existing symbols."""
+    if icon in RESEARCH_ICONS:
+        return (
+            '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">'
+            + RESEARCH_ICONS[icon]
+            + '</svg>'
+        )
+    return f'<span class="bh-legacy-symbol">{icon}</span>' if icon else ''
+
+
 def metric(label: str, note: str = "Awaiting research data", icon: str = "") -> str:
     """Create an empty metric; do not imply zero or fabricated results."""
     return (
         '<div class="bh-metric">'
-        f'<div class="bh-metric-label"><span>{label}</span><span>{icon}</span></div>'
+        f'<div class="bh-metric-label"><span>{label}</span>'
+        f'<span class="bh-metric-icon">{metric_icon(icon)}</span></div>'
         '<div class="bh-metric-value">—</div>'
         f'<div class="bh-metric-note">{note}</div>'
         '</div>'
@@ -218,10 +287,10 @@ with st.container(key="bhage_shell"):
     if st.session_state.bhage_page == "Overview":
         page_heading("Research Overview", "Your BHAGE research at a glance.")
         metric_grid([
-            ("Genomes analyzed", "Awaiting research data", "◫"),
-            ("Model accuracy", "Awaiting research data", "▥"),
-            ("Host classes", "Awaiting research data", "♧"),
-            ("Latest experiment", "Awaiting research data", "⚗"),
+            ("Genomes analyzed", "Awaiting research data", "dna"),
+            ("Model accuracy", "Awaiting research data", "target"),
+            ("Host classes", "Awaiting research data", "network"),
+            ("Latest experiment", "Awaiting research data", "flask"),
         ])
         st.markdown(
             '<div class="bh-card">'
@@ -264,10 +333,10 @@ with st.container(key="bhage_shell"):
     else:
         page_heading("Research Evaluation", "Examine how well BHAGE’s models perform.")
         metric_grid([
-            ("Accuracy", "Not evaluated", "%"),
-            ("Balanced Accuracy", "Not evaluated", "⚖"),
-            ("Confusion Matrix", "Not evaluated", "▦"),
-            ("Feature Comparison", "Not evaluated", "▥"),
+            ("Accuracy", "Not evaluated", "target"),
+            ("Balanced Accuracy", "Not evaluated", "scale"),
+            ("Confusion Matrix", "Not evaluated", "matrix"),
+            ("Feature Comparison", "Not evaluated", "chart"),
         ])
         st.markdown(
             '<div class="bh-card">'
