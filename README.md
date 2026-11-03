@@ -34,8 +34,6 @@ Launch the Streamlit dashboard:
 python -m streamlit run app.py
 ```
 
-*Note: The dashboard is not yet implemented.*
-
 ## Research Documentation
 
 - `docs/experiments.md` — Machine learning experiments, results, and observations.
