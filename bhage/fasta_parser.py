@@ -19,6 +19,7 @@ def parse_fasta(file):
         # Temporary pause, next step is to reset sequence lines when a new header is encountered.
         # else:
                 #sequence_lines.append(temp)
+                #sequence_lines = []
 
 
 
