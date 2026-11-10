@@ -16,11 +16,10 @@ def parse_fasta(file):
 
             current_id = temp[1:].strip()
             sequence_lines = []
+        else:
+            sequence_lines.append(temp)
 
-        # Temporary pause, next step is to reset sequence lines when a new header is encountered.
-        # else:
-                #sequence_lines.append(temp)
-
-
-
+    if current_id is not None:
+        record = {"id": current_id, "genetic_payload": sequence_lines}
+        records.append(record)
 
