@@ -11,15 +11,16 @@ def parse_fasta(file):
         if temp.startswith(">"):
 
             if current_id is not None:
-                record = {"id": current_id, "genetic_payload": sequence_lines}
+                record = {"id": current_id, "genetic_payload": ''.join(sequence_lines)}
                 records.append(record)
 
             current_id = temp[1:].strip()
             sequence_lines = []
         else:
-            sequence_lines.append(temp)
+            sequence_lines.append(temp.strip().upper())
 
     if current_id is not None:
-        record = {"id": current_id, "genetic_payload": sequence_lines}
+        record = {"id": current_id, "genetic_payload": ''.join(sequence_lines)}
         records.append(record)
 
+    return records
