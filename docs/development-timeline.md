@@ -16,6 +16,22 @@ These are proposed target dates, not confirmed completion dates. Milestones must
 | M8 — Expanded Phage Research | June–July 2027 | July 31, 2027 | Provisional |
 | M9 — Integrated Research & Discovery | August 2027 | August 31, 2027 | Provisional |
 
+## M3.1 — FASTA Parsing & Validation
+
+**Progress as of November 11, 2026:** In progress — 2 of 5 planned work sessions completed. Target: November 14, 2026.
+
+| Session | Scope | Status |
+| --- | --- | --- |
+| Day 1 | Multi-record parsing: save previous record, reset sequence collection, save final record, guard against saving a missing identifier | Complete |
+| Day 2 | Strip surrounding whitespace, uppercase DNA, join sequence lines, return structured records | Complete |
+| Day 3 | Header and nucleotide validation, including malformed records | Pending |
+| Day 4 | Error handling and empty-input/empty-sequence behavior | Pending |
+| Day 5 | Automated tests, edge cases, and refinement | Pending |
+
+**Verification:** On November 11, the parser successfully returned all three expected normalized genome records from `tests/fixtures/test_normalization.fasta`. This manual test covers multi-record separation, case normalization, sequence joining, and final-record saving. Full validation and edge-case testing remain outstanding.
+
+**Next:** Complete M3.1 validation before starting M3.2 — Nucleotide Counting & GC Content.
+
 ## Milestone outcomes
 
 - **M3:** FASTA parsing, genome statistics, tests, and Streamlit integration.
