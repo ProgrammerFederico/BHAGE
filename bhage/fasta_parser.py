@@ -16,7 +16,7 @@ def parse_fasta(file):
 
             current_id = temp[1:].strip()
             sequence_lines = []
-        else:
+        elif current_id is not None:
             sequence_lines.append(temp.strip().upper())
 
     if current_id is not None:
