@@ -15,6 +15,7 @@ def parse_fasta(file):
                 records.append(record)
 
             current_id = temp[1:].strip()
+            if not current_id: raise ValueError("FASTA header is missing a phage identifier.")
             sequence_lines = []
         elif current_id is not None:
             sequence_lines.append(temp.strip().upper())
