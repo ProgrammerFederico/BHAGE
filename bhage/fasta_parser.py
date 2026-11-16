@@ -19,6 +19,9 @@ def parse_fasta(file):
             sequence_lines = []
         elif current_id is not None:
             sequence_lines.append(temp.strip().upper())
+            
+        else:
+            raise ValueError("Malformed FASTA File Detected.")
 
     if current_id is not None:
         record = {"id": current_id, "genetic_payload": ''.join(sequence_lines)}
