@@ -10,14 +10,57 @@
 `bhage/fasta_parser.py` — `parse_fasta(file)`
 
 ## Goal
+
 Build a reusable FASTA parser that reads a text stream, supports multiple FASTA records in one file, normalizes and validates DNA sequences, and returns structured records independently of Streamlit.
 
-## What I Did
+## 30 Second Observation (will later be formatted)
+
+- Struggled with tracking multiple variables simunltaneously.
+- Understood individual Python concepts but struggled when combining them.
+- Encountered difficulty following execution order and indentation.
+- Made significant progress after breaking the parser down into smaller pieces.
 
 ## What Worked
 
+- Successfully implemented multi-record FASTA parsing.
+- Cleaned raw DNA sequences using .strip() and upper.()
+- Combined multiline DNA sequences into continuous strings.
+- Saved final FASTA record after loop finishes.
+- Breaking down complex logic into individual steps.
+- Using visual representations such as flow charts to understand variables and their changing values.
+
+
 ## What Didn't Work
+- Accounting for final FASTA record when no header was present.
+- Reviewing entire parser at once made execution order difficult to follow.
+
+
+
+## What I Learned
+
+- Empty python strings are seen as false.
+- Nested conditionals/loops, indentation, and execution order.
+- Raise to print an error statement triggered by a conditional.
+- String slicing and concatenation using join().
+- Importance of handling final record seperately outside the loop.
+- How to represent multiple genomes using a list of dictionaries.
+
 
 ## Scientific Decisions
+- Represent each phage genome as an individual record.
+- Convert DNA sequences to uppercase.
+- Reject malformed FASTA input instead of accepting invalid data.
+- IUPAC DNA alphabet compatability.
+- Seperate FASTA parsing and validation from downstream gnome analysis to maintain modularity.
 
 ## Next Steps
+
+- [x] Implement multi-record FASTA parsing.
+- [x] Implement sequence normalization.
+- [x] Manually test multi-record parsing and normalization.
+- [ ] Complete header and malformed FASTA validation.
+- [ ] Implement IUPAC nucleotide validation.
+- [ ] Handle empty sequences and empty FASTA files.
+- [ ] Develop automated parser tests.
+- [ ] Verify parser reliability before progressing to M3.2 — Genome Feature Extraction.
+
