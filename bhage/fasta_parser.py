@@ -14,7 +14,9 @@ def parse_fasta(file):
             # Check for new Header
             if current_id is not None:
                 # Save previous header / DNA
-                record = {"id": current_id, "genetic_payload": ''.join(sequence_lines)}
+                genome = "".join(sequence_lines)
+                if not genome: raise ValueError("Empty genome detected.")
+                record = {"id": current_id, "genetic_payload": genome}
                 records.append(record)
 
             # Grab New Header. Note to remember; Since current id starts as None, the program will start down here.
@@ -22,17 +24,25 @@ def parse_fasta(file):
             if not current_id: raise ValueError("FASTA header is missing a phage identifier.")
             # Clear DNA
             sequence_lines = []
+            if not sequence_lines: raise ValueError("Empty genome detected.")
         elif current_id is not None:
+            #Normalize the DNA (clean it) before appending.
             normalized_sequence = temp.strip().upper()
+            #Loop through DNA to ensure valid nucleotides via IUPAC alphabet.
             for nucleotide in normalized_sequence:
                 if nucleotide not in valid_nucleotides:
-                    raise ValueError("Invalid Nucleotide Detected.")
+                    raise ValueError("Invalid nucleotide detected.")
             sequence_lines.append(normalized_sequence)
         else:
-            raise ValueError("Malformed FASTA File Detected.")
+            raise ValueError("Malformed FASTA file detected.")
 
+    # Outside of loop, so save final record!
     if current_id is not None:
-        record = {"id": current_id, "genetic_payload": ''.join(sequence_lines)}
+        genome = "".join(sequence_lines)
+        if not genome: raise ValueError("Empty genome detected.")
+        record = {"id": current_id, "genetic_payload": genome}
         records.append(record)
 
+
+    if not records: raise ValueError("Empty FASTA file detected.")
     return records
