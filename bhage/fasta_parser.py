@@ -2,13 +2,11 @@ def parse_fasta(file):
 
     records = []
     current_id = None
-    description = None
     sequence_lines = []
     valid_nucleotides = set("ACGTRYSWKMBDHVN")
     
 
     for temp in file:
-        print(repr(temp)) #View current item (for debugging).
         # Check for Header
         if temp.startswith(">"):
 
@@ -34,7 +32,7 @@ def parse_fasta(file):
             for nucleotide in normalized_sequence:
 
                 if nucleotide not in valid_nucleotides:
-                    raise ValueError(f"Invalid Nucleotide Detected: {nucleotide!r}")
+                    raise ValueError(f"Invalid Nucleotide detected: {nucleotide!r}")
             sequence_lines.append(normalized_sequence)
         else:
             raise ValueError("Malformed FASTA file detected.")
