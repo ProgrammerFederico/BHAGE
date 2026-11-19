@@ -2,6 +2,8 @@
 
 **Planning baseline:** November 9, 2026
 
+**Last updated:** November 18, 2026
+
 These are proposed target dates, not confirmed completion dates. Milestones must satisfy scientific and engineering acceptance criteria before being marked complete.
 
 | Milestone | Target period | Target completion | Status |
@@ -18,19 +20,28 @@ These are proposed target dates, not confirmed completion dates. Milestones must
 
 ## M3.1 — FASTA Parsing & Validation
 
-**Progress as of November 11, 2026:** In progress — 2 of 5 planned work sessions completed. Target: November 14, 2026.
+**Status:** Complete — November 18, 2026 (original target: November 14).
 
 | Session | Scope | Status |
 | --- | --- | --- |
-| Day 1 | Multi-record parsing: save previous record, reset sequence collection, save final record, guard against saving a missing identifier | Complete |
-| Day 2 | Strip surrounding whitespace, uppercase DNA, join sequence lines, return structured records | Complete |
-| Day 3 | Header and nucleotide validation, including malformed records | Pending |
-| Day 4 | Error handling and empty-input/empty-sequence behavior | Pending |
-| Day 5 | Automated tests, edge cases, and refinement | Pending |
+| Day 1 | Multi-record parsing and final-record handling | Complete |
+| Day 2 | Sequence normalization and structured records | Complete |
+| Day 3 | Header, malformed input and IUPAC validation | Complete |
+| Day 4 | Empty-input and empty-genome handling | Complete |
+| Day 5 | Automated tests and refinement | Complete |
 
-**Verification:** On November 11, the parser successfully returned all three expected normalized genome records from `tests/fixtures/test_normalization.fasta`. This manual test covers multi-record separation, case normalization, sequence joining, and final-record saving. Full validation and edge-case testing remain outstanding.
+**Verification:** Nine automated pytest tests passed, including normalization, valid and invalid IUPAC input, missing identifiers, malformed FASTA, empty intermediate and final genomes, blank genomes and empty files. Seven exception tests verify both exception type and message. Development dependency recorded in `requirements-dev.txt`. Results reported from local execution.
 
-**Next:** Complete M3.1 validation before starting M3.2 — Nucleotide Counting & GC Content.
+## Remaining M3 work
+
+| Task | Revised target | Status |
+| --- | --- | --- |
+| M3.2 — Nucleotide counting and genome statistics (#12), including structured results | November 19–23 | Next |
+| M3.3 — Automated genome analysis tests (#13) | November 24–26 | Planned |
+| M3.4 — Streamlit integration (#14) | November 27–29 | Planned |
+| M3 acceptance review and buffer | November 30 | Planned |
+
+The remaining dates are revised planning targets, not commitments. The M3 and later milestone deadlines remain unchanged. Parser tests are complete; downstream calculations and integration still require verification.
 
 ## Milestone outcomes
 
