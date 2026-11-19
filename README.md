@@ -10,7 +10,12 @@ Investigate whether genomic features extracted from bacteriophage DNA sequences 
 
 **Current version:** v0.1 — Initial Development
 
-BHAGE is currently in its early development stage. The initial implementation will focus on establishing a Streamlit research dashboard, genomic feature extraction, and a baseline host-prediction model.
+The Streamlit research dashboard foundation and FASTA parsing/validation module are complete. As of November 18, 2026, all nine planned parser tests passed locally. Genome feature extraction is the next task; host prediction is not yet implemented.
+
+- M1 — Repository Foundation: complete
+- M2 — Streamlit Dashboard: complete
+- M3 — Genome Analysis: in progress (M3.1 complete; M3.2 next)
+- M4 — Host Prediction v0.1: planned
 
 ## Getting Started
 
@@ -34,7 +39,16 @@ Launch the Streamlit dashboard:
 python -m streamlit run app.py
 ```
 
+### Running tests
+
+```powershell
+python -m pip install -r requirements-dev.txt
+python -m pytest
+```
+
 ## Research Documentation
+
+- [Development timeline](docs/development-timeline.md) — Milestone targets and progress.
 
 - `docs/experiments.md` — Machine learning experiments, results, and observations.
 - GitHub Issues and Milestones — Development tasks and progress tracking.
