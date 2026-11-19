@@ -20,7 +20,9 @@ These are proposed target dates, not confirmed completion dates. Milestones must
 
 ## M3.1 — FASTA Parsing & Validation
 
-**Status:** Complete — November 18, 2026 (original target: November 14).
+**Status:** Complete — November 18, 2026. **Actual active work period: November 4–18, 2026 (15 calendar days, inclusive; not 15 full workdays).** Original target: November 14, 2026.
+
+The GitHub Projects roadmap should represent M3.1 as a **date range (Nov 4 start → Nov 18 finish)**, rather than a single Nov 4 marker. The item should appear first within the M3 group in task-number order.
 
 | Session | Scope | Status |
 | --- | --- | --- |
