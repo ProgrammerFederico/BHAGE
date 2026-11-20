@@ -4,7 +4,7 @@
 **Project:** BHAGE
 **Milestone:** M3 — Genome Analysis
 **Task:** M3.1 — FASTA Parsing and Validation (#11)
-**Status:** In progress
+**Status:** Completed
 
 ## Program / Task
 `bhage/fasta_parser.py` — `parse_fasta(file)`
@@ -13,12 +13,14 @@
 
 Build a reusable FASTA parser that reads a text stream, supports multiple FASTA records in one file, normalizes and validates DNA sequences, and returns structured records independently of Streamlit.
 
+
 ## 30 Second Session Observation 
 
 - Struggled with tracking multiple variables simunltaneously.
 - Understood individual Python concepts but struggled when combining them.
 - Encountered difficulty following execution order and indentation.
 - Made significant progress after breaking the parser down into smaller pieces.
+
 
 ## What Worked
 
@@ -70,6 +72,7 @@ Build a reusable FASTA parser that reads a text stream, supports multiple FASTA 
 - Reject genome genomes as well as invalid FASTA headers to prevent invalid data from entering downstream analysis.
 - Seperate FASTA parsing and validation from downstream gnome analysis to maintain modularity.
 
+
 ## Testing Results
 
 | Test | Result |
@@ -85,6 +88,7 @@ Build a reusable FASTA parser that reads a text stream, supports multiple FASTA 
 | Empty FASTA file | Passed |
 
 **Final result:** 9/9 automated tests passed.
+
 
 ## Next Steps
 
