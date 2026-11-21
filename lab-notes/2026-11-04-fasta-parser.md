@@ -1,6 +1,7 @@
 # M3.1 — FASTA Parser: Lab Notes
 
-**Date:** 2026-11-04
+**Initialization Date:** 2026-11-04
+**Updated Date:** 2026-11-20
 **Project:** BHAGE
 **Milestone:** M3 — Genome Analysis
 **Task:** M3.1 — FASTA Parsing and Validation (#11)

@@ -1,6 +1,6 @@
 def parse_fasta(file):
 
-    records = []
+    parsed_records = []
     current_id = None
     sequence_lines = []
     valid_nucleotides = set("ACGTRYSWKMBDHVN")
@@ -15,8 +15,11 @@ def parse_fasta(file):
                 # Save previous header / DNA
                 genome = "".join(sequence_lines)
                 if not genome: raise ValueError("Empty genome detected.")
-                record = {"id": current_id, "genetic_payload": genome}
-                records.append(record)
+                parsed_record = {
+                    "id": current_id, 
+                    "genetic_payload": genome
+                    }
+                parsed_records.append(parsed_record)
 
             # Grab New Header. Note to remember; Since current id starts as None, the program will start down here.
             current_id = temp[1:].strip()
@@ -41,9 +44,12 @@ def parse_fasta(file):
     if current_id is not None:
         genome = "".join(sequence_lines)
         if not genome: raise ValueError("Empty genome detected.")
-        record = {"id": current_id, "genetic_payload": genome}
-        records.append(record)
+        parsed_record = {
+            "id": current_id, 
+            "genetic_payload": genome
+            }
+        parsed_records.append(parsed_record)
 
 
-    if not records: raise ValueError("Empty FASTA file detected.")
-    return records
+    if not parsed_records: raise ValueError("Empty FASTA file detected.")
+    return parsed_records
