@@ -43,6 +43,8 @@ Build a reusable genome analyzer uses validated DNA sequences, including genome 
 - Using sum() in combination with .values() dictionary method to calculate known counts.
 - Neater syntax for dictionaries.
 - Importance of distinguishing a GC percentage of 0% from an undefined GC percentage caused by zero confirmed nucleotides.
+- Import files using an ailas, instead of typing the entire name out. 
+- Refreshed on raise ValueError() which creates the error yourself, versus pytest.raises(ValueError), checks whether the function that is being tested created the error.
 
 
 ## Scientific Decisions
