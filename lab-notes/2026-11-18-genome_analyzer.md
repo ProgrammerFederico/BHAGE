@@ -73,4 +73,4 @@ Build a reusable genome analyzer uses validated DNA sequences, including genome 
 - [x] Return structured analysis results, including genome identifiers and quality notes.
 - [x] Verify normal and ambiguous DNA sequences.
 - [x] Document numerical edge cases.
-- [ ] M3.3 - Write automated tests for Genome Analysis.
+- [x] M3.3 - Write automated tests for Genome Analysis.
