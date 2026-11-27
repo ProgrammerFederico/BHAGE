@@ -5,7 +5,9 @@ and research evaluation will be connected later from modules in bhage/.
 """
 
 import streamlit as st
-
+import bhage.fasta_parser as fp
+import bhage.genome_analyzer as ga
+import pandas as pd
 
 # ── Page and navigation state ────────────────────────────────────────────────
 st.set_page_config(
@@ -184,6 +186,14 @@ st.markdown(
         }
     }
 
+    [data-testid="stSelectbox"] input {
+        caret-color: transparent;
+        cursor: pointer !important;
+    }
+
+    [data-testid="stSelectbox"] [data-baseweb="select"] {
+        cursor: pointer !important;
+    }
 </style>
 """
     + f"""
@@ -233,22 +243,36 @@ def metric_icon(icon: str) -> str:
     return f'<span class="bh-legacy-symbol">{icon}</span>' if icon else ''
 
 
-def metric(label: str, note: str = "Awaiting research data", icon: str = "") -> str:
+def metric(label: str, note: str = "Awaiting research data", icon: str = "", value = "—") -> str:
     """Create an empty metric; do not imply zero or fabricated results."""
     return (
         '<div class="bh-metric">'
         f'<div class="bh-metric-label"><span>{label}</span>'
         f'<span class="bh-metric-icon">{metric_icon(icon)}</span></div>'
-        '<div class="bh-metric-value">—</div>'
+        f'<div class="bh-metric-value">{value}</div>'
         f'<div class="bh-metric-note">{note}</div>'
         '</div>'
     )
 
 
-def metric_grid(items: list[tuple[str, str, str]]) -> None:
+def metric_grid(items: list[tuple[str, str, str] | tuple[str, str, str, int | str]]) -> None:
+
+    cards = []
+    for item in items:
+        if len(item) == 3:
+            card = metric(item[0], item[1], item[2])
+
+        elif len(item) == 4:
+            card = metric(item[0], item[1], item[2], item[3])
+
+        else:
+            raise ValueError("Metric tuple must contain exactly 3 or 4 elements.")
+
+        cards.append(card)
+
     st.markdown(
         '<div class="bh-grid">'
-        + ''.join(metric(label, note, icon) for label, note, icon in items)
+        + ''.join(cards)
         + '</div>',
         unsafe_allow_html=True,
     )
@@ -312,15 +336,63 @@ with st.container(key="bhage_shell"):
             unsafe_allow_html=True,
         )
 
+    # Genome Analysis
     elif st.session_state.bhage_page == "Genome Analysis":
         page_heading("Genome Analysis", "Analyze sequence-derived genomic characteristics.")
-        centered_placeholder("⇧", "Upload a FASTA file", "Interface placeholder · Not connected yet")
-        metric_grid([
-            ("GC content", "Awaiting analysis", ""),
-            ("Genome length", "Awaiting analysis", ""),
-            ("Nucleotide counts", "Awaiting analysis", ""),
-            ("K-mer features", "Planned for v0.2", ""),
-        ])
+        # Upload File Functionality
+        uploaded_file = st.file_uploader("Upload a FASTA file", type=["fasta", "fa"])
+        if uploaded_file != None:
+            fasta_text = uploaded_file.getvalue().decode()
+            fasta_lines = fasta_text.splitlines()
+            parsed_records = fp.parse_fasta(fasta_lines)
+
+            analysis_results = []
+            for parsed_record in parsed_records:
+                analyzed_record = ga.analyze_genome(parsed_record)
+                analysis_results.append(analyzed_record)
+
+            phage_ids = []
+            for analysis_result in analysis_results:
+                phage_id = analysis_result["id"]
+                phage_ids.append(phage_id)
+
+            selected_phage = st.selectbox("Choose a Phage", phage_ids)
+            selected_index = phage_ids.index(selected_phage)
+            selected_record = analysis_results[selected_index]
+
+            gc_content = selected_record["gc_content"]
+            genome_length = selected_record["genome_length"]
+            nucleotide_count = selected_record["nucleotide_count"]
+            ambiguity_count = selected_record["ambiguity"]["count"]
+            ambiguity_percentage = selected_record["ambiguity"]["percentage"]
+
+            # Data Formatting
+            if gc_content == None:
+                formatted_gc = "N/A"
+            else: 
+                formatted_gc = f"{gc_content:.2f}%"
+
+            formatted_genome_length = f"{genome_length:,} bp"
+            formatted_ambiguity = f"{ambiguity_count} bp ({ambiguity_percentage:.2f}%)"
+
+
+
+            # Grid Card Creation
+            metric_grid([
+                ("GC content", "GC percentage among canonical bases", "", formatted_gc),
+                ("Genome length", "Total nucleotide count", "", formatted_genome_length),
+                ("Sequence ambiguity", "Ambiguous nucleotide positions", "", formatted_ambiguity),
+                ("K-mer features", "Planned for v0.2", ""),
+            ])
+
+            # Nucleotide Distribution Bar Chart
+            nucleotide_bases = list(nucleotide_count.keys())
+            nucleotide_counts = list(nucleotide_count.values())
+
+
+            # Raw Analysis Output
+            with st.expander("View raw analysis output"):
+                st.write(analysis_results)
 
     elif st.session_state.bhage_page == "Host Prediction":
         page_heading("Host Prediction", "Machine learning predictions from genomic data.")
