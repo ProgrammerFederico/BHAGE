@@ -8,6 +8,7 @@ import streamlit as st
 import bhage.fasta_parser as fp
 import bhage.genome_analyzer as ga
 import pandas as pd
+import altair as alt
 
 # ── Page and navigation state ────────────────────────────────────────────────
 st.set_page_config(
@@ -194,6 +195,12 @@ st.markdown(
     [data-testid="stSelectbox"] [data-baseweb="select"] {
         cursor: pointer !important;
     }
+
+    [data-testid="stAlert"] {
+        margin-bottom: 16px;
+    }
+
+
 </style>
 """
     + f"""
@@ -342,9 +349,22 @@ with st.container(key="bhage_shell"):
         # Upload File Functionality
         uploaded_file = st.file_uploader("Upload a FASTA file", type=["fasta", "fa"])
         if uploaded_file != None:
-            fasta_text = uploaded_file.getvalue().decode()
-            fasta_lines = fasta_text.splitlines()
-            parsed_records = fp.parse_fasta(fasta_lines)
+            # Error Handling
+            try:
+                fasta_text = uploaded_file.getvalue().decode()
+                fasta_lines = fasta_text.splitlines()
+                parsed_records = fp.parse_fasta(fasta_lines)
+            except ValueError as v_er: 
+                st.error(
+                    f"FASTA Validation failed*\n\n"
+                    f"{str(v_er)}\n\n"
+                    f"Please correct the sequence or upload another FASTA file.",
+                    icon = "⚠️",
+                    )
+                
+                st.stop()
+
+
 
             analysis_results = []
             for parsed_record in parsed_records:
@@ -356,10 +376,21 @@ with st.container(key="bhage_shell"):
                 phage_id = analysis_result["id"]
                 phage_ids.append(phage_id)
 
-            selected_phage = st.selectbox("Choose a Phage", phage_ids)
-            selected_index = phage_ids.index(selected_phage)
-            selected_record = analysis_results[selected_index]
+            # Create Unique IDs using length of Phage IDs, creating a range from 0 to that number, then turning it into a list.
+            # Neccessary to support duplicate IDs.
+            record_indices = list(range(0, len(phage_ids)))
 
+            def format_phage_label(index):
+                phage_name = phage_ids[index]
+                record_number = index + 1
+                formatted_label = f"{phage_name} (Record #{record_number})"
+                return formatted_label
+
+            
+            selected_index = st.selectbox("Choose a Phage", format_func = format_phage_label, options = record_indices)
+            selected_record = analysis_results[selected_index]
+            
+            # Setup Values for Presentation
             gc_content = selected_record["gc_content"]
             genome_length = selected_record["genome_length"]
             nucleotide_count = selected_record["nucleotide_count"]
@@ -388,12 +419,70 @@ with st.container(key="bhage_shell"):
             # Nucleotide Distribution Bar Chart
             nucleotide_bases = list(nucleotide_count.keys())
             nucleotide_counts = list(nucleotide_count.values())
+            nucleotide_colors = {
+                "A": "#a3dabc",
+                "T": "#6baf90",
+                "G": "#9cbde0",
+                "C": "#638ebc"
+            }
 
+            # Chart Styling
+            color_domain = list(nucleotide_colors.keys())
+            color_range = list(nucleotide_colors.values())
+
+            # Map nucleotides to colors
+            nucleotide_scale = alt.Scale(domain = color_domain, range = color_range)
+            color_encoding = alt.Color(field = "Nucleotide", scale = nucleotide_scale)
+            axis_style = alt.Axis(labelAngle = 0)
+
+            # Calculate Y Upper Limit using nested max's, and also preventing 0 count edge case.
+            y_upper_limit = max(1, (max(nucleotide_counts) * 1.15))
+        
+
+            # Control Bar Width / Spacing
+            x_scale = alt.Scale(
+                paddingInner = 0.5,
+                paddingOuter = 0.25
+            )
+
+            # Control Bar Height
+            y_scale = alt.Scale(
+                type = "linear",
+                domain = (0, y_upper_limit),
+                nice = False
+            )
+
+
+            x_encoding = alt.X(field = "Nucleotide", axis = axis_style, sort = color_domain, scale = x_scale)
+            y_encoding = alt.Y(field = "Count", scale = y_scale)
+
+            chart_data = {
+                    "Nucleotide": nucleotide_bases,
+                    "Count": nucleotide_counts
+                }
+
+            chart_df = pd.DataFrame(chart_data)
+
+            nucleotide_chart = alt.Chart(chart_df).mark_bar(cornerRadiusEnd = 6).encode(
+                x = x_encoding, 
+                y = y_encoding,
+                color = color_encoding
+            )
+            nucleotide_labels = alt.Chart(chart_df).mark_text(dy = -10, color = "#f1f2f1", fontSize = 20, fontWeight = "bold").encode(
+                x = x_encoding,
+                y = y_encoding,
+                text="Count"
+                )
+
+            combined_nucleotide_chart = alt.layer(nucleotide_chart,nucleotide_labels).properties(height = 220)
+            st.altair_chart(combined_nucleotide_chart)
 
             # Raw Analysis Output
             with st.expander("View raw analysis output"):
-                st.write(analysis_results)
+                st.dataframe(chart_df)
+                st.write(analysis_results)       
 
+                 
     elif st.session_state.bhage_page == "Host Prediction":
         page_heading("Host Prediction", "Machine learning predictions from genomic data.")
         centered_placeholder(

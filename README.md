@@ -14,8 +14,8 @@ The Streamlit research dashboard foundation and FASTA parsing/validation module 
 
 - M1 — Repository Foundation: complete
 - M2 — Streamlit Dashboard: complete
-- M3 — Genome Analysis: in progress (M3.1 complete; M3.2 next)
-- M4 — Host Prediction v0.1: planned
+- M3 — Genome Analysis: complete
+- M4 — Host Prediction v0.1: in progress
 
 ## Getting Started
 
